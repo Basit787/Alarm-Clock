@@ -10,25 +10,26 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import React, { useEffect, useState } from "react";
+import Ringtone from "../components/Ringtone";
 
 interface Alarm {
+  id: number;
   time: string;
   snoozeCount: number;
 }
 
 const AlarmClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [newAlarm, setNewAlarm] = useState("");
   const [alarms, setAlarms] = useState<Alarm[]>([]);
+  const [newAlarm, setNewAlarm] = useState("");
   const [activeAlarm, setActiveAlarm] = useState<Alarm | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
   useEffect(() => {
-    const interval = setInterval(() => {
+    setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -45,21 +46,28 @@ const AlarmClock = () => {
     });
   }, [currentTime, alarms]);
 
-  const handleAddOrUpdateAlarm = () => {
+  const handleAddAlarm = () => {
     if (newAlarm) {
-      if (isEditing && editIndex !== null) {
-        const updatedAlarms = [...alarms];
-        updatedAlarms[editIndex] = {
-          ...updatedAlarms[editIndex],
+      setAlarms([
+        ...alarms,
+        {
+          id: Math.ceil(Math.random() * 1000),
           time: newAlarm,
-        };
-        setAlarms(updatedAlarms);
-        setIsEditing(false);
-        setEditIndex(null);
-      } else {
-        setAlarms([...alarms, { time: newAlarm, snoozeCount: 0 }]);
-      }
+          snoozeCount: 0,
+        },
+      ]);
       setNewAlarm("");
+    }
+  };
+
+  const handleUpdateAlarm = () => {
+    if (editIndex !== null && newAlarm) {
+      const updatedAlarms = alarms.map((alarm, index) =>
+        index === editIndex ? { ...alarm, time: newAlarm } : alarm
+      );
+      setAlarms(updatedAlarms);
+      setNewAlarm("");
+      setEditIndex(null);
     }
   };
 
@@ -79,6 +87,13 @@ const AlarmClock = () => {
     }
   };
 
+  const getSnoozeTime = (time: string) => {
+    const snoozeTime = time.split(":").map(Number);
+    const date = new Date();
+    date.setHours(snoozeTime[0], snoozeTime[1] + 5, 0, 0);
+    return date.toTimeString().substring(0, 5);
+  };
+
   const handleCancelAlarm = () => {
     if (activeAlarm) {
       setAlarms(alarms.filter((alarm) => alarm.time !== activeAlarm.time));
@@ -86,31 +101,19 @@ const AlarmClock = () => {
     }
   };
 
-  const getSnoozeTime = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    const snoozeMinutes = 5;
-    const date = new Date();
-    date.setHours(hours, minutes + snoozeMinutes, 0, 0);
-    return date.toTimeString().substring(0, 5);
-  };
-
   const handleEditAlarm = (index: number) => {
     setNewAlarm(alarms[index].time);
-    setIsEditing(true);
     setEditIndex(index);
   };
 
-  const handleDeleteAlarm = (index: number) => {
-    const updatedAlarms = alarms.filter(
-      (_, alarmIndex) => alarmIndex !== index
-    );
-    setAlarms(updatedAlarms);
+  const handleDeleteAlarm = (id: number) => {
+    setAlarms(alarms.filter((alarm) => alarm.id !== id));
   };
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <Card className="w-1/2 flex flex-col justify-center items-center">
-        <p className="text-8xl m-5">
+      <Card className="md:w-1/2 w-full flex flex-col justify-center items-center">
+        <p className="md:text-8xl m-5">
           {currentTime.toTimeString().substring(0, 8)}
         </p>
         <div className="flex flex-row gap-5">
@@ -121,20 +124,20 @@ const AlarmClock = () => {
             className="cursor-pointer"
           />
           <Button
-            onClick={handleAddOrUpdateAlarm}
+            onClick={editIndex   ? handleAddAlarm : handleUpdateAlarm}
             className="bg-sky-600 hover:bg-sky-700 text-white rounded"
           >
-            {isEditing ? "Update Alarm" : "Add Alarm"}
+            {editIndex === null ? "Add" : "Update"}
           </Button>
         </div>
-        <div className="m-5 w-96 flex justify-center items-center">
+        <div className="m-5  flex flex-col justify-center items-center gap-4">
           {alarms.length > 0 ? (
             alarms.map((alarm, index) => (
               <Card
                 key={index}
-                className="p-4 flex flex-row justify-between items-center"
+                className="p-4  flex flex-row justify-between items-center "
               >
-                <div>{alarm.time}</div>
+                <div className="md:text-xl m-4">{alarm.time}</div>
                 <div className="flex gap-2">
                   <Button
                     onClick={() => handleEditAlarm(index)}
@@ -143,7 +146,7 @@ const AlarmClock = () => {
                     Edit
                   </Button>
                   <Button
-                    onClick={() => handleDeleteAlarm(index)}
+                    onClick={() => handleDeleteAlarm(alarm.id)}
                     className="bg-red-600 hover:bg-red-700 text-white rounded"
                   >
                     Delete
@@ -155,7 +158,7 @@ const AlarmClock = () => {
             <p>No alarms set</p>
           )}
         </div>
-
+        <Ringtone open={dialogOpen} />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
             <DialogHeader>
@@ -163,8 +166,18 @@ const AlarmClock = () => {
             </DialogHeader>
             <p>The alarm for {activeAlarm?.time} is ringing.</p>
             <DialogFooter>
-              <Button onClick={handleSnooze}>Snooze</Button>
-              <Button onClick={handleCancelAlarm}>Cancel</Button>
+              <Button
+                onClick={handleSnooze}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded"
+              >
+                Snooze
+              </Button>
+              <Button
+                onClick={handleCancelAlarm}
+                className="bg-red-600 hover:bg-red-700 text-white rounded"
+              >
+                Cancel
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
