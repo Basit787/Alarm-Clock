@@ -25,6 +25,7 @@ const AlarmClock = () => {
   const [activeAlarm, setActiveAlarm] = useState<Alarm | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setInterval(() => {
@@ -46,17 +47,31 @@ const AlarmClock = () => {
     });
   }, [currentTime, alarms]);
 
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+    }
+  }, [error]);
+
   const handleAddAlarm = () => {
-    if (newAlarm) {
-      setAlarms([
-        ...alarms,
-        {
-          id: Math.ceil(Math.random() * 1000),
-          time: newAlarm,
-          snoozeCount: 0,
-        },
-      ]);
+    const alreadyAlarm = alarms.find((alarm) => alarm.time === newAlarm);
+    if (!alreadyAlarm) {
+      if (newAlarm) {
+        setAlarms([
+          ...alarms,
+          {
+            id: Math.ceil(Math.random() * 1000),
+            time: newAlarm,
+            snoozeCount: 0,
+          },
+        ]);
+        setNewAlarm("");
+      }
+    } else {
       setNewAlarm("");
+      setError("Alarm already exist!!!");
     }
   };
 
@@ -117,19 +132,25 @@ const AlarmClock = () => {
           {currentTime.toTimeString().substring(0, 8)}
         </p>
         <div className="flex flex-col md:flex-row gap-5">
-          <Input
-            type="time"
-            value={newAlarm}
-            onChange={(e) => setNewAlarm(e.target.value)}
-            className="cursor-pointer w-32 h-10 rounded text-center"
-            placeholder="Select Time"
-          />
-          <Button
-            onClick={editIndex !== null ? handleUpdateAlarm : handleAddAlarm}
-            className="bg-sky-600 hover:bg-sky-700 text-white rounded"
-          >
-            {editIndex === null ? "Add" : "Update"}
-          </Button>
+          <div>
+            <p> {editIndex !== null ? "Update Time" : "Add Time"}</p>
+            <Input
+              type="time"
+              value={newAlarm}
+              onChange={(e) => setNewAlarm(e.target.value)}
+              className="cursor-pointer w-32 h-10 rounded text-center"
+              placeholder="Select Time"
+            />
+          </div>
+          {newAlarm && (
+            <Button
+              onClick={editIndex !== null ? handleUpdateAlarm : handleAddAlarm}
+              className="bg-sky-600 hover:bg-sky-700 text-white rounded"
+            >
+              {editIndex === null ? "Add" : "Update"}
+            </Button>
+          )}
+          {error && <p className="text-red-700">{error}</p>}
         </div>
         <div className="m-5  flex flex-col justify-center items-center gap-4">
           {alarms.length > 0 ? (
@@ -167,7 +188,7 @@ const AlarmClock = () => {
               <DialogTitle>Alarm is ringing!</DialogTitle>
             </DialogHeader>
             <p>The alarm for {activeAlarm?.time} is ringing.</p>
-            <DialogFooter className="flex md:flex-row flex-col gap-5 ">
+            <DialogFooter className="flex md:flex-row flex-col gap-4 ">
               <Button
                 onClick={handleSnooze}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white rounded"
