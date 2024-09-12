@@ -122,6 +122,7 @@ const AlarmClock = () => {
             value={newAlarm}
             onChange={(e) => setNewAlarm(e.target.value)}
             className="cursor-pointer w-32 h-10 rounded text-center"
+            placeholder="Select Time"
           />
           <Button
             onClick={editIndex !== null ? handleUpdateAlarm : handleAddAlarm}
@@ -160,13 +161,13 @@ const AlarmClock = () => {
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
-            <Ringtone />{" "}
+            <Ringtone />
             {/* yaha se aawaz aayegi, ye hai ringtone ka component 😎 */}
             <DialogHeader>
               <DialogTitle>Alarm is ringing!</DialogTitle>
             </DialogHeader>
             <p>The alarm for {activeAlarm?.time} is ringing.</p>
-            <DialogFooter>
+            <DialogFooter className="flex md:flex-row flex-col gap-5 ">
               <Button
                 onClick={handleSnooze}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white rounded"
