@@ -137,7 +137,7 @@ const AlarmClock = () => {
                 key={index}
                 className="p-4  flex flex-row justify-between items-center md:w-96 "
               >
-                <div className="md:text-xl m-4">{alarm.time}</div>
+                <div className="text-xl m-4">{alarm.time}</div>
                 <div className="flex gap-2">
                   <Button
                     onClick={() => handleEditAlarm(index)}
