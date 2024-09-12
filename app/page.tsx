@@ -1,4 +1,3 @@
-import React from "react";
 import AlarmClock from "./container/Alarm";
 
 const page = () => {

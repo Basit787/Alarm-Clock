@@ -23,7 +23,7 @@ const AlarmClock = () => {
   const [alarms, setAlarms] = useState<Alarm[]>([]);
   const [newAlarm, setNewAlarm] = useState("");
   const [activeAlarm, setActiveAlarm] = useState<Alarm | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const AlarmClock = () => {
             className="cursor-pointer"
           />
           <Button
-            onClick={editIndex   ? handleAddAlarm : handleUpdateAlarm}
+            onClick={editIndex !== null ? handleUpdateAlarm : handleAddAlarm}
             className="bg-sky-600 hover:bg-sky-700 text-white rounded"
           >
             {editIndex === null ? "Add" : "Update"}
@@ -158,7 +158,6 @@ const AlarmClock = () => {
             <p>No alarms set</p>
           )}
         </div>
-        <Ringtone open={dialogOpen} />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
             <DialogHeader>
@@ -179,6 +178,7 @@ const AlarmClock = () => {
                 Cancel
               </Button>
             </DialogFooter>
+            <Ringtone />
           </DialogContent>
         </Dialog>
       </Card>
