@@ -88,10 +88,9 @@ const AlarmClock = () => {
   };
 
   const getSnoozeTime = (time: string) => {
-    const snoozeTime = time.split(":").map((data) => Number(data));
-    console.log(snoozeTime);
+    const [hours, minutes] = time.split(":").map(Number);
     const date = new Date();
-    date.setHours(snoozeTime[0], snoozeTime[1] + 5, 0, 0);
+    date.setHours(hours, minutes + 5, 0, 0);
     return date.toTimeString().substring(0, 5);
   };
 
@@ -114,7 +113,7 @@ const AlarmClock = () => {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       <Card className="md:w-1/2 w-full flex flex-col justify-center items-center">
-        <p className="md:text-8xl m-5">
+        <p className="md:text-8xl text-4xl m-5">
           {currentTime.toTimeString().substring(0, 8)}
         </p>
         <div className="flex flex-col md:flex-row gap-5">
