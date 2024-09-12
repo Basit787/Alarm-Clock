@@ -88,7 +88,8 @@ const AlarmClock = () => {
   };
 
   const getSnoozeTime = (time: string) => {
-    const snoozeTime = time.split(":").map(Number);
+    const snoozeTime = time.split(":").map((data) => Number(data));
+    console.log(snoozeTime);
     const date = new Date();
     date.setHours(snoozeTime[0], snoozeTime[1] + 5, 0, 0);
     return date.toTimeString().substring(0, 5);
@@ -116,12 +117,12 @@ const AlarmClock = () => {
         <p className="md:text-8xl m-5">
           {currentTime.toTimeString().substring(0, 8)}
         </p>
-        <div className="flex flex-row gap-5">
+        <div className="flex flex-col md:flex-row gap-5">
           <Input
             type="time"
             value={newAlarm}
             onChange={(e) => setNewAlarm(e.target.value)}
-            className="cursor-pointer"
+            className="cursor-pointer w-32 h-10 rounded text-center"
           />
           <Button
             onClick={editIndex !== null ? handleUpdateAlarm : handleAddAlarm}

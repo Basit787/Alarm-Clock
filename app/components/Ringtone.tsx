@@ -4,7 +4,7 @@ const Ringtone = () => {
   return (
     <div>
       <audio
-        src="/Chin Tapak Dam Dam(Funny Meme Song) ft. Ank Royal  Chhota Bheem  Hindi Rap 2024  MW.mp3"
+        src="/twirling-intime-lenovo-k8-note-alarm-tone-41440.mp3"
         autoPlay
         loop
       />
