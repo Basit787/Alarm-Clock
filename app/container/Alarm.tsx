@@ -160,7 +160,8 @@ const AlarmClock = () => {
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
-            <Ringtone /> {/* yaha se aawaz aayegi, ye hai ringtone ka component 😎 */}
+            <Ringtone />{" "}
+            {/* yaha se aawaz aayegi, ye hai ringtone ka component 😎 */}
             <DialogHeader>
               <DialogTitle>Alarm is ringing!</DialogTitle>
             </DialogHeader>
