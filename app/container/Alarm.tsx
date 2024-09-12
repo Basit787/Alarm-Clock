@@ -57,7 +57,8 @@ const AlarmClock = () => {
 
   const handleAddAlarm = () => {
     const alreadyAlarm = alarms.find((alarm) => alarm.time === newAlarm);
-    if (!alreadyAlarm) {
+    const snoozeCount = alarms.find((alarm) => alarm.snoozeCount > 0);
+    if (snoozeCount ? alreadyAlarm : !alreadyAlarm) {
       if (newAlarm) {
         setAlarms([
           ...alarms,
@@ -131,14 +132,16 @@ const AlarmClock = () => {
         <p className="md:text-8xl text-4xl m-5">
           {currentTime.toTimeString().substring(0, 8)}
         </p>
-        <div className="flex flex-col md:flex-row gap-5">
-          <div>
-            <p> {editIndex !== null ? "Update Time" : "Add Time"}</p>
+        <div className="flex flex-col md:flex-row gap-5 items-center">
+          <div className="border-2">
+            <p className="text-xl">
+              {editIndex !== null ? "Update Time" : "Select Time"}
+            </p>
             <Input
               type="time"
               value={newAlarm}
               onChange={(e) => setNewAlarm(e.target.value)}
-              className="cursor-pointer w-32 h-10 rounded text-center"
+              className="cursor-pointer w-32 h-10 rounded text-center border-none text-xl"
               placeholder="Select Time"
             />
           </div>
@@ -150,8 +153,8 @@ const AlarmClock = () => {
               {editIndex === null ? "Add" : "Update"}
             </Button>
           )}
-          {error && <p className="text-red-700">{error}</p>}
         </div>
+        {error && <p className="text-red-700">{error}</p>}
         <div className="m-5  flex flex-col justify-center items-center gap-4">
           {alarms.length > 0 ? (
             alarms.map((alarm, index) => (
@@ -159,8 +162,13 @@ const AlarmClock = () => {
                 key={index}
                 className="p-4  flex flex-row justify-between items-center md:w-96 "
               >
-                <div className="text-xl m-4">{alarm.time}</div>
-                <div className="flex gap-2">
+                <div>
+                  <div className="md:text-xl text-lg m-4">{alarm.time}</div>
+                  <div className="md:text-xl text-lg m-4">
+                    Snooze: {alarm.snoozeCount}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
                   <Button
                     onClick={() => handleEditAlarm(index)}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white rounded"
@@ -183,7 +191,6 @@ const AlarmClock = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
             <Ringtone />
-            {/* yaha se aawaz aayegi, ye hai ringtone ka component 😎 */}
             <DialogHeader>
               <DialogTitle>Alarm is ringing!</DialogTitle>
             </DialogHeader>
