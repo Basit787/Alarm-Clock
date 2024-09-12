@@ -135,7 +135,7 @@ const AlarmClock = () => {
             alarms.map((alarm, index) => (
               <Card
                 key={index}
-                className="p-4  flex flex-row justify-between items-center "
+                className="p-4  flex flex-row justify-between items-center md:w-96 "
               >
                 <div className="md:text-xl m-4">{alarm.time}</div>
                 <div className="flex gap-2">
@@ -160,6 +160,7 @@ const AlarmClock = () => {
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
+            <Ringtone /> {/* yaha se aawaz aayegi, ye hai ringtone ka component 😎 */}
             <DialogHeader>
               <DialogTitle>Alarm is ringing!</DialogTitle>
             </DialogHeader>
@@ -178,7 +179,6 @@ const AlarmClock = () => {
                 Cancel
               </Button>
             </DialogFooter>
-            <Ringtone />
           </DialogContent>
         </Dialog>
       </Card>
