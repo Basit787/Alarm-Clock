@@ -1,10 +1,10 @@
 "use client";
 
-import { Bell, Edit2, Trash2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useAlarm } from "@/contexts/AlarmContext";
+import { AnimatePresence, motion } from "framer-motion";
+import { Bell, Trash2 } from "lucide-react";
 
 export function AlarmList() {
   const { alarms, handleDeleteAlarm, setAlarms } = useAlarm();

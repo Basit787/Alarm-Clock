@@ -1,14 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Clock, Plus } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAlarm } from "@/contexts/AlarmContext";
-import { useToast } from "@/hooks/use-toast";
 import {
   Form,
   FormControl,
@@ -18,10 +11,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { formSchema, FormValues } from "@/zod/formSchema";
+import { Input } from "@/components/ui/input";
+import { useAlarm } from "@/contexts/AlarmContext";
+import { useToast } from "@/hooks/use-toast";
 import { DAYS } from "@/utils/data";
-import { useState } from "react";
+import { formSchema, FormValues } from "@/zod/formSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function AlarmForm() {
   const { setAlarms } = useAlarm();
